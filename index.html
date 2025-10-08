@@ -1,71 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Timeline</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Graphs & Timelines</title>
+  <style>
+    :root{
+      --bg:#fff;
+      --text:#111;
+      --muted:#555;
+      --rule:#e5e5e5;
+      --accent:#ffd400; /* FA yellow */
+      --focus:#005fcc;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji", "Segoe UI Symbol";
+      line-height:1.5;
+      font-size:16px;
+      text-rendering:optimizeLegibility;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    .container{max-width:1200px;margin:0 auto;padding:36px 24px 80px}
+
+    /* Header: stark + utilitarian */
+    header{
+      border-bottom:1px solid var(--rule);
+      padding-bottom:12px;margin-bottom:12px;
+      display:flex;justify-content:space-between;gap:16px;align-items:flex-end;flex-wrap:wrap;
+    }
+    .brand{display:flex;flex-direction:column;gap:4px}
+    .brand h1{
+      margin:0;font-weight:800;letter-spacing:.3px;
+      font-size:clamp(24px,3.2vw,40px);
+    }
+    .brand small{
+      color:var(--muted);font-size:12px;letter-spacing:.3px;text-transform:uppercase;
+    }
+    .meta{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12px;color:var(--muted);white-space:nowrap;
+    }
+
+    /* Primary section tabs */
+    .tabs{display:flex;gap:18px;border-bottom:1px solid var(--rule);padding:10px 0;margin-bottom:16px}
+    .tab{
+      appearance:none;background:transparent;border:none;margin:0;padding:10px 0;cursor:pointer;
+      font-weight:800;letter-spacing:.6px;text-transform:uppercase;font-size:14px;color:var(--text);
+      position:relative;
+    }
+    .tab::after{
+      content:"";position:absolute;left:0;right:0;bottom:-11px;height:3px;background:transparent;transition:background .15s ease;
+    }
+    .tab[aria-selected="true"]::after{background:var(--text)}
+    .tab:hover::after{background:rgba(0,0,0,.55)}
+    .tab:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+    /* Two-column layout: sticky index + content */
+    .layout{display:grid;grid-template-columns:260px 1fr;gap:32px}
+    .index{
+      position:sticky;top:16px;height:fit-content;
+      border-top:1px solid var(--rule);
+      padding-top:12px;
+    }
+    .index h3{
+      margin:0 0 8px 0;font-size:12px;color:var(--muted);letter-spacing:.3px;text-transform:uppercase;
+    }
+    .toc{list-style:none;margin:0;padding:0}
+    .toc li{margin:6px 0}
+    .toc a{
+      text-decoration:none;color:var(--text);
+      box-shadow: inset 0 -1px 0 0 rgba(0,0,0,.35);
+    }
+    .toc a:hover{box-shadow: inset 0 -2px 0 0 rgba(0,0,0,.8); background:linear-gradient(transparent 60%, rgba(255,212,0,.35) 60%)}
+    .toc a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+    /* Content areas */
+    .panel{display:none}
+    .panel[aria-hidden="false"]{display:block}
+    .section{padding:18px 0 22px;border-top:1px solid var(--rule)}
+    h2{margin:0 0 8px 0;font-size:18px;font-weight:800;letter-spacing:.2px}
+    h3{margin:24px 0 6px 0;font-size:14px;color:var(--muted);letter-spacing:.2px;text-transform:uppercase}
+
+    ul{padding-left:18px;margin:6px 0 0}
+    li{margin:6px 0}
+    a{color:inherit;text-decoration:none;box-shadow: inset 0 -1px 0 0 rgba(0,0,0,.35);transition: box-shadow .15s ease, background .15s ease}
+    a:hover{box-shadow: inset 0 -2px 0 0 rgba(0,0,0,.85); background:linear-gradient(transparent 60%, rgba(255,212,0,.35) 60%)}
+    a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+    /* Subtle callouts */
+    .note{color:var(--muted);font-style:italic;font-size:14px;margin:4px 0}
+
+    /* Footer stamp */
+    footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:10px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .stamp{display:inline-flex;align-items:center;gap:8px;line-height:1;white-space:nowrap}
+    .tag{background:var(--text);color:#fff;font-weight:700;text-transform:uppercase;font-size:10px;padding:4px 6px;letter-spacing:.4px}
+
+    /* Smooth scroll for anchored sections */
+    html{scroll-behavior:smooth}
+
+    /* Print-friendly */
+    @media print{
+      .tabs, .index, .tag{display:none}
+      a{box-shadow:none;text-decoration:underline}
+      .container{padding:0}
+      header{margin-bottom:0}
+      .section{break-inside:avoid}
+    }
+
+    /* Responsive */
+    @media (max-width: 860px){
+      .layout{grid-template-columns:1fr}
+      .index{position:static;border-top:none;padding-top:0;margin-bottom:8px}
+      .index h3{display:none}
+      .toc{display:flex;flex-wrap:wrap;gap:10px}
+      .toc li{margin:0}
+    }
+  </style>
 </head>
 <body>
-    <h1>Melilla Graphs</h1>
-    
-        <h2>For Robert Zac JAck</h2>
-    <li><a href="interactive_plot.html"> Political timeline with Funds</a></li>   
-    <li><a href="interactive_timeline_EN.html"> Political timeline EN</a></li>
-    <li><a href="impunity_timeline_13.04.24.html">Latest - Impunity timeline </a></li>
-   
-    
-    
+  <div class="container">
+    <header>
+      <div class="brand">
+        <h1>Graphs &amp; Timelines</h1>
+        <small>Investigative index of interactive assets</small>
+      </div>
+      <div class="meta">build v1.3 · <span class="tag">index</span></div>
+    </header>
 
-    
-    <h2>For Hanaa</h2>
-    <li><a href="impunity_timeline_13.04.24.html">Updated - 13.04 - Impunity timeline </a></li>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab" role="tab" id="tab-melilla" aria-controls="panel-melilla" aria-selected="true">Melilla</button>
+      <button class="tab" role="tab" id="tab-poland" aria-controls="panel-poland" aria-selected="false">Poland</button>
+    </nav>
 
-    
-    
+    <!-- MELILLA -->
+    <section id="panel-melilla" class="panel" role="tabpanel" aria-labelledby="tab-melilla" aria-hidden="false">
+      <div class="layout">
+        <aside class="index" aria-label="Melilla index">
+          <h3>Sections</h3>
+          <ol class="toc">
+            <li><a href="#mel-robert">For Robert Zac JAck</a></li>
+            <li><a href="#mel-hanaa">For Hanaa</a></li>
+            <li><a href="#mel-trimeste">Old — Trimeste</a></li>
+            <li><a href="#mel-mensuel">Old — Mensuel</a></li>
+            <li><a href="#mel-misc">Old — Misc</a></li>
+          </ol>
+        </aside>
 
+        <main>
+          <div id="mel-robert" class="section">
+            <h2>For Robert Zac JAck</h2>
+            <ul>
+              <li><a href="interactive_plot.html">Political timeline with Funds</a></li>
+              <li><a href="interactive_timeline_EN.html">Political timeline EN</a></li>
+              <li><a href="impunity_timeline_13.04.24.html">Latest — Impunity timeline</a></li>
+            </ul>
+          </div>
 
+          <div id="mel-hanaa" class="section">
+            <h2>For Hanaa</h2>
+            <ul>
+              <li><a href="impunity_timeline_13.04.24.html">Updated — 13.04 — Impunity timeline</a></li>
+            </ul>
+          </div>
 
-    <h2>OLD</h2>
-    
-    <h3>Trimeste</h3>
-    
-    <ul>
+          <div id="mel-trimeste" class="section">
+            <h2>Old — Trimeste</h2>
+            <ul>
+              <li><a href="3M_morts_abs.html">Morts et taux de mortalité 3M</a></li>
+              <li><a href="3M_melilla_arrivees.html">Arrivées et taux de mortalité 3M</a></li>
+              <li><a href="3M_dr_only.html">Taux de mortalité 3M</a></li>
+            </ul>
+          </div>
 
-        <li><a href="3M_morts_abs.html">Morts et taux de mortalité 3M</a></li>
-        <li><a href="3M_melilla_arrivees.html">Arrivées et taux de mortalité 3M</a></li>
-        <li><a href="3M_dr_only.html">Taux de mortalité 3M</a></li>
+          <div id="mel-mensuel" class="section">
+            <h2>Old — Mensuel</h2>
+            <ul>
+              <li><a href="M_deaths_melilla.html">Morts et taux de mortalité</a></li>
+              <li><a href="M_melilla_arrivees.html">Arrivées et taux de mortalité</a></li>
+              <li><a href="M_DR_melilla.html">Taux de mortalité</a></li>
+              <li><a href="M_SPAIN_ARRIVALS.html">Arrivées ESPAGNE</a></li>
+              <li><a href="M_Ceuta_Melilla.html">Arrivées CEUTA et MELILLA</a></li>
+              <li><a href="arrivals_nation.html">Arrivées par nationalité</a></li>
+            </ul>
+          </div>
 
-        
-    </ul>
-    
-    
-    <h3>Mensuel</h3>
-    <ul>
-        <li><a href="M_deaths_melilla.html">Morts et taux de mortalité</a></li>
-        <li><a href="M_melilla_arrivees.html">Arrivées et taux de mortalité</a></li>
-        <li><a href="M_DR_melilla.html">Taux de mortalité</a></li>
-        
-        
-        <li><a href="M_SPAIN_ARRIVALS.html">Arrivées ESAPGNE</a></li>
-        <li><a href="M_Ceuta_Melilla.html">Arrivées CEUTA et MELILLA</a></li>
-        
-        
-        
-        <li><a href="arrivals_nation.html">Arrivées par nationalité</a></li>
-    </ul>
-    
-    
-    
-    <h2>OLD</h2>
-    <ul>
-        <li><a href="timeline_arrestations_AMDH.html">Timeline Arrestations AMDH</a></li>
-        <li><a href="timeline_arrivals_v1.html">Timeline Arrivals v1</a></li>
-        <li><a href="timeline_arrivals_v2.html">Timeline Arrivals v2</a></li>
-        <li><a href="timeline_booza_AMDH.html">Timeline Booza AMDH</a></li>
-        <li><a href="timeline_morts_APDHA.html">Timeline Morts APDHA</a></li>
-        <li><a href="timeline_morts_IOM.html">Timeline Morts IOM</a></li>
-        <li><a href="proximité.html">Timeline Morts proximité diplo</a></li>
-    </ul>
-    
+          <div id="mel-misc" class="section">
+            <h2>Old — Misc</h2>
+            <ul>
+              <li><a href="timeline_arrestations_AMDH.html">Timeline Arrestations AMDH</a></li>
+              <li><a href="timeline_arrivals_v1.html">Timeline Arrivals v1</a></li>
+              <li><a href="timeline_arrivals_v2.html">Timeline Arrivals v2</a></li>
+              <li><a href="timeline_booza_AMDH.html">Timeline Booza AMDH</a></li>
+              <li><a href="timeline_morts_APDHA.html">Timeline Morts APDHA</a></li>
+              <li><a href="timeline_morts_IOM.html">Timeline Morts IOM</a></li>
+              <li><a href="proximité.html">Timeline Morts proximité diplo</a></li>
+            </ul>
+          </div>
+        </main>
+      </div>
+    </section>
+
+    <!-- POLAND -->
+    <section id="panel-poland" class="panel" role="tabpanel" aria-labelledby="tab-poland" aria-hidden="true">
+      <div class="layout">
+        <aside class="index" aria-label="Poland index">
+          <h3>Sections</h3>
+          <ol class="toc">
+            <li><a href="#pol-overview">Overview</a></li>
+            <li><a href="#pol-links">Links</a></li>
+          </ol>
+        </aside>
+
+        <main>
+          <div id="pol-overview" class="section">
+            <h2>Poland</h2>
+            <p class="note">Add links to HTML assets here (same structure as Melilla).</p>
+          </div>
+          <div id="pol-links" class="section">
+            <h3>Placeholders</h3>
+            <ul>
+              <li><a href="#">[placeholder] Political timeline</a></li>
+              <li><a href="#">[placeholder] Arrivals and mortality</a></li>
+              <li><a href="#">[placeholder] Additional visualizations</a></li>
+            </ul>
+          </div>
+        </main>
+      </div>
+    </section>
+
+    <footer>
+      <span class="stamp">© Project index</span>
+      <span class="stamp">Typeface: system · Accent: FA yellow</span>
+    </footer>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.panel');
+
+    function activateTab(id){
+      tabs.forEach(t=>t.setAttribute('aria-selected', String(t.id===id)));
+      panels.forEach(p=>{
+        const show = p.id === document.getElementById(id).getAttribute('aria-controls');
+        p.setAttribute('aria-hidden', String(!show));
+      });
+      // Move focus to first heading in the shown panel for a11y
+      const shown = Array.from(panels).find(p=>p.getAttribute('aria-hidden')==='false');
+      const h2 = shown && shown.querySelector('h2');
+      if(h2){ h2.setAttribute('tabindex','-1'); h2.focus({preventScroll:true}); }
+    }
+
+    tabs.forEach(t=>t.addEventListener('click', ()=>activateTab(t.id)));
+
+    // Keyboard support for tabs
+    document.addEventListener('keydown', (e) => {
+      const current = Array.from(tabs).findIndex(t => t.getAttribute('aria-selected') === 'true');
+      if (['ArrowRight','ArrowLeft'].includes(e.key)) {
+        e.preventDefault();
+        const dir = e.key === 'ArrowRight' ? 1 : -1;
+        const next = (current + dir + tabs.length) % tabs.length;
+        tabs[next].focus();
+        activateTab(tabs[next].id);
+      }
+    });
+  </script>
 </body>
 </html>
