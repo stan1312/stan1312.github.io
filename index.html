@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Graphs & Timelines</title>
+  <title>1312 Graphs and Timelines</title>
   <style>
     :root{
       --bg:#fff;
       --text:#111;
       --muted:#555;
       --rule:#e5e5e5;
-      --accent:#ffd400; /* FA yellow */
+      --accent:#ffd400; /* FA yellow (kept for focus) */
+      --accent-red:#e10600; /* FA-style red */
       --focus:#005fcc;
     }
     *{box-sizing:border-box}
@@ -26,9 +27,47 @@
       -webkit-font-smoothing:antialiased;
     }
 
-    .container{max-width:1200px;margin:0 auto;padding:36px 24px 80px}
+    /* ===== Gate (password) ===== */
+    .gate{
+      display:grid; place-items:center;
+      min-height:100dvh; padding:32px 16px;
+    }
+    .gate-card{
+      width:min(560px, 92vw);
+      border:1px solid var(--rule);
+      padding:24px 20px;
+    }
+    .gate h1{
+      margin:0 0 6px 0;font-weight:800;letter-spacing:.3px;
+      font-size:clamp(24px,3.2vw,40px);
+    }
+    .gate p.sub{
+      margin:0 0 18px 0;color:var(--muted);font-size:14px;
+    }
+    .gate .row{display:flex;gap:10px;align-items:center;margin-top:12px}
+    .gate label{font-size:12px;text-transform:uppercase;letter-spacing:.3px;color:var(--muted)}
+    .gate input[type="password"]{
+      flex:1; padding:10px 12px; border:1px solid var(--rule);
+      font-size:16px;
+    }
+    .gate button{
+      appearance:none; background:#111; color:#fff; border:none;
+      padding:10px 14px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; cursor:pointer;
+    }
+    .gate button:hover{background:#000}
+    .gate .err{color:var(--accent-red); font-size:13px; min-height:18px; margin-top:6px}
 
-    /* Header: stark + utilitarian */
+    .gate-foot{
+      margin-top:16px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+      color:var(--muted); font-size:12px; border-top:1px solid var(--rule); padding-top:10px;
+    }
+    .gate .hl-red{display:inline-block;background:#e10600;color:#fff;padding:0 6px;line-height:1.35}
+
+    
+    .flag-red{display:inline-block;background:#e10600;color:#fff;padding:0 6px;line-height:1.35}
+    /* ===== Main container ===== */
+    .container{max-width:1200px;margin:0 auto;padding:36px 24px 80px; display:none} /* hidden until unlocked */
+
     header{
       border-bottom:1px solid var(--rule);
       padding-bottom:12px;margin-bottom:12px;
@@ -42,12 +81,13 @@
     .brand small{
       color:var(--muted);font-size:12px;letter-spacing:.3px;text-transform:uppercase;
     }
+    .brand .hl-red{display:inline-block;background:#e10600;color:#fff;padding:0 6px;line-height:1.35}
     .meta{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size:12px;color:var(--muted);white-space:nowrap;
     }
 
-    /* Primary section tabs */
+    /* Tabs */
     .tabs{display:flex;gap:18px;border-bottom:1px solid var(--rule);padding:10px 0;margin-bottom:16px}
     .tab{
       appearance:none;background:transparent;border:none;margin:0;padding:10px 0;cursor:pointer;
@@ -58,53 +98,40 @@
       content:"";position:absolute;left:0;right:0;bottom:-11px;height:3px;background:transparent;transition:background .15s ease;
     }
     .tab[aria-selected="true"]::after{background:var(--text)}
-    .tab:hover::after{background:rgba(0,0,0,.55)}
+    .tab:hover::after{background:var(--accent-red)}
     .tab:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 
-    /* Two-column layout: sticky index + content */
+    /* Layout */
     .layout{display:grid;grid-template-columns:260px 1fr;gap:32px}
-    .index{
-      position:sticky;top:16px;height:fit-content;
-      border-top:1px solid var(--rule);
-      padding-top:12px;
-    }
-    .index h3{
-      margin:0 0 8px 0;font-size:12px;color:var(--muted);letter-spacing:.3px;text-transform:uppercase;
-    }
+    .index{position:sticky;top:16px;height:fit-content;border-top:1px solid var(--rule);padding-top:12px}
+    .index h3{margin:0 0 8px 0;font-size:12px;color:var(--muted);letter-spacing:.3px;text-transform:uppercase}
     .toc{list-style:none;margin:0;padding:0}
     .toc li{margin:6px 0}
-    .toc a{
-      text-decoration:none;color:var(--text);
-      box-shadow: inset 0 -1px 0 0 rgba(0,0,0,.35);
-    }
-    .toc a:hover{box-shadow: inset 0 -2px 0 0 rgba(0,0,0,.8); background:linear-gradient(transparent 60%, rgba(255,212,0,.35) 60%)}
+    .toc a{text-decoration:none;color:var(--text);box-shadow: inset 0 -1px 0 0 rgba(0,0,0,.35)}
+    .toc a:hover{box-shadow:none;background:#e10600;color:#fff}
     .toc a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 
-    /* Content areas */
     .panel{display:none}
     .panel[aria-hidden="false"]{display:block}
     .section{padding:18px 0 22px;border-top:1px solid var(--rule)}
-    h2{margin:0 0 8px 0;font-size:18px;font-weight:800;letter-spacing:.2px}
+    h2{margin:0 0 8px 0;font-size:18px;font-weight:800;letter-spacing:.2px;position:relative}
+    h2::after{content:"";display:block;height:2px;width:36px;background:var(--accent-red);margin-top:6px}
     h3{margin:24px 0 6px 0;font-size:14px;color:var(--muted);letter-spacing:.2px;text-transform:uppercase}
 
     ul{padding-left:18px;margin:6px 0 0}
     li{margin:6px 0}
     a{color:inherit;text-decoration:none;box-shadow: inset 0 -1px 0 0 rgba(0,0,0,.35);transition: box-shadow .15s ease, background .15s ease}
-    a:hover{box-shadow: inset 0 -2px 0 0 rgba(0,0,0,.85); background:linear-gradient(transparent 60%, rgba(255,212,0,.35) 60%)}
+    a:hover{box-shadow:none;background:#e10600;color:#fff}
     a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 
-    /* Subtle callouts */
     .note{color:var(--muted);font-style:italic;font-size:14px;margin:4px 0}
 
-    /* Footer stamp */
     footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:10px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
     .stamp{display:inline-flex;align-items:center;gap:8px;line-height:1;white-space:nowrap}
     .tag{background:var(--text);color:#fff;font-weight:700;text-transform:uppercase;font-size:10px;padding:4px 6px;letter-spacing:.4px}
 
-    /* Smooth scroll for anchored sections */
     html{scroll-behavior:smooth}
 
-    /* Print-friendly */
     @media print{
       .tabs, .index, .tag{display:none}
       a{box-shadow:none;text-decoration:underline}
@@ -113,7 +140,6 @@
       .section{break-inside:avoid}
     }
 
-    /* Responsive */
     @media (max-width: 860px){
       .layout{grid-template-columns:1fr}
       .index{position:static;border-top:none;padding-top:0;margin-bottom:8px}
@@ -124,13 +150,34 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <!-- Password Gate -->
+  <div class="gate" id="gate">
+    <div class="gate-card">
+      <h1>1312 Graphs and Timelines</h1>
+      <p class="sub">Working versions of interactive assets for <span class="hl-red">BF's investigations</span>.</p>
+      <div class="row">
+        <div style="flex:1">
+          <label for="pw">Access password</label>
+          <input id="pw" type="password" inputmode="numeric" autocomplete="current-password" aria-describedby="err" />
+          <div id="err" class="err" role="alert" aria-live="polite"></div>
+        </div>
+        <button id="enter" aria-label="Enter">Enter</button>
+      </div>
+      <div class="gate-foot">
+        <span>Protected index (client-side only)</span>
+        <span>Hint: four digits</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Site -->
+  <div class="container" id="site">
     <header>
       <div class="brand">
-        <h1>Graphs &amp; Timelines</h1>
-        <small>Investigative index of interactive assets</small>
+        <h1>1312 Graphs and Timelines</h1>
+        <small>Working versions of interactive assets for <span class="hl-red">BF's investigations</span></small>
       </div>
-      <div class="meta">build v1.3 · <span class="tag">index</span></div>
+      <div class="meta">build v1.4 · <span class="tag">index</span></div>
     </header>
 
     <nav class="tabs" role="tablist" aria-label="Sections">
@@ -236,29 +283,55 @@
 
     <footer>
       <span class="stamp">© Project index</span>
-      <span class="stamp">Typeface: system · Accent: FA yellow</span>
+      <span class="stamp">Typeface: system · Accents: red &amp; yellow</span>
     </footer>
   </div>
 
   <script>
+    /* ===== Password Gate =====
+       NOTE: client-side only; not secure for sensitive content.
+       Change PASSWORD value to update.
+    */
+    const PASSWORD = "1312";
+    const gate = document.getElementById('gate');
+    const site = document.getElementById('site');
+    const pw = document.getElementById('pw');
+    const enterBtn = document.getElementById('enter');
+    const err = document.getElementById('err');
+
+    function unlock(){
+      const ok = pw.value.trim() === PASSWORD;
+      if(ok){
+        sessionStorage.setItem('gate_ok', '1');
+        gate.style.display = 'none';
+        site.style.display = 'block';
+      }else{
+        err.textContent = "Incorrect password";
+      }
+    }
+    enterBtn.addEventListener('click', unlock);
+    pw.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ unlock(); }});
+
+    // Auto-unlock if already validated this session
+    if(sessionStorage.getItem('gate_ok') === '1'){
+      gate.style.display = 'none';
+      site.style.display = 'block';
+    }
+
+    /* ===== Tabs ===== */
     const tabs = document.querySelectorAll('.tab');
     const panels = document.querySelectorAll('.panel');
-
     function activateTab(id){
       tabs.forEach(t=>t.setAttribute('aria-selected', String(t.id===id)));
       panels.forEach(p=>{
         const show = p.id === document.getElementById(id).getAttribute('aria-controls');
         p.setAttribute('aria-hidden', String(!show));
       });
-      // Move focus to first heading in the shown panel for a11y
       const shown = Array.from(panels).find(p=>p.getAttribute('aria-hidden')==='false');
       const h2 = shown && shown.querySelector('h2');
       if(h2){ h2.setAttribute('tabindex','-1'); h2.focus({preventScroll:true}); }
     }
-
     tabs.forEach(t=>t.addEventListener('click', ()=>activateTab(t.id)));
-
-    // Keyboard support for tabs
     document.addEventListener('keydown', (e) => {
       const current = Array.from(tabs).findIndex(t => t.getAttribute('aria-selected') === 'true');
       if (['ArrowRight','ArrowLeft'].includes(e.key)) {
