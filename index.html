@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>1312 Graphs and Timelines</title>
+  <style>
+    :root{
+      --bg:#fff;
+      --text:#111;
+      --muted:#555;
+      --rule:#e5e5e5;
+      --accent:#ffd400; /* FA yellow (kept for focus) */
+      --accent-blue:#0a5cff; /* FA-style red */
+      --focus:#005fcc;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      line-height:1.5;
+      font-size:16px;
+      text-rendering:optimizeLegibility;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    /* ===== Gate (password) ===== */
+    .gate{
+      display:grid; place-items:center;
+      min-height:100dvh; padding:32px 16px;
+    }
+    .gate-card{
+      width:min(680px, 94vw);
+      border:1px solid var(--rule);
+      padding: 32px 28px;
+    }
+    .gate h1{
+      margin:0 0 6px 0;font-weight:800;letter-spacing:.3px;
+      font-size:clamp(24px,3.2vw,40px);
+    }
+    .gate p.sub{
+      margin:0 0 18px 0;color:var(--muted);font-size:14px;
+    }
+    .gate .row{display:flex;gap:10px;align-items:center;margin-top:12px}
+    .gate label{font-size:12px;text-transform:uppercase;letter-spacing:.3px;color:var(--muted)}
+    .gate input[type="password"]{
+      flex:1; padding:10px 12px; border:1px solid var(--rule);
+      font-size:16px;
+    }
+    .gate button{
+      appearance:none; background:#111; color:#fff; border:none;
+      padding:10px 14px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; cursor:pointer;
+    }
+    .gate button:hover{background:#000}
+    .gate .err{color:var(--accent-blue); font-size:13px; min-height:18px; margin-top:6px}
+
+    .gate-foot{
+      margin-top:16px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+      color:var(--muted); font-size:12px; border-top:1px solid var(--rule); padding-top:10px;
+    }
+    .gate .hl-red{display:inline-block;color:var(--accent-blue);border:2px solid var(--accent-blue);padding:0 6px;line-height:1.35}
+
+    
+    .flag-red{display:inline-block;color:var(--accent-blue);border:2px solid var(--accent-blue);padding:0 6px;line-height:1.35}
+    /* ===== Main container ===== */
+    .container{max-width:1200px;margin:0 auto;padding:36px 24px 80px; display:none} /* hidden until unlocked */
+
+    header{
+      border-bottom:1px solid var(--rule);
+      padding-bottom:12px;margin-bottom:12px;
+      display:flex;justify-content:space-between;gap:16px;align-items:flex-end;flex-wrap:wrap;
+    }
+    .brand{display:flex;flex-direction:column;gap:4px}
+    .brand h1{
+      margin:0;font-weight:800;letter-spacing:.3px;
+      font-size:clamp(24px,3.2vw,40px);
+    }
+    .brand small{
+      color:var(--muted);font-size:12px;letter-spacing:.3px;text-transform:uppercase;
+    }
+    .brand .hl-red{display:inline-block;color:var(--accent-blue);border:2px solid var(--accent-blue);padding:0 6px;line-height:1.35}
+    .meta{
+      font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size:12px;color:var(--muted);white-space:nowrap;
+    }
+
+    /* Tabs */
+    .tabs{display:flex;gap:18px;border-bottom:1px solid var(--rule);padding:10px 0;margin-bottom:16px}
+    .tab{
+      appearance:none;background:transparent;border:none;margin:0;padding:10px 0;cursor:pointer;
+      font-weight:800;letter-spacing:.6px;text-transform:uppercase;font-size:14px;color:var(--text);
+      position:relative;
+    }
+    .tab::after{
+      content:"";position:absolute;left:0;right:0;bottom:-11px;height:3px;background:transparent;transition:background .15s ease;
+    }
+    .tab[aria-selected="true"]::after{background:var(--text)}
+    .tab:hover::after{background:var(--accent-blue)}
+    .tab:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+    /* Layout */
+    .layout{display:grid;grid-template-columns:260px 1fr;gap:32px}
+    .index{position:sticky;top:16px;height:fit-content;border-top:1px solid var(--rule);padding-top:12px}
+    .index h3{margin:0 0 8px 0;font-size:12px;color:var(--muted);letter-spacing:.3px;text-transform:uppercase}
+    .toc{list-style:none;margin:0;padding:0}
+    .toc li{margin:6px 0}
+    .toc a{text-decoration:none;color:var(--text);box-shadow: inset 0 -1px 0 0 rgba(0,0,0,.35)}
+    .toc a:hover{box-shadow: inset 0 -2px 0 0 var(--accent-blue); color: inherit; background: transparent}
+    .toc a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+    .panel{display:none}
+    .panel[aria-hidden="false"]{display:block}
+    .section{padding:18px 0 22px;border-top:1px solid var(--rule)}
+    h2{margin:0 0 8px 0;font-size:18px;font-weight:800;letter-spacing:.2px;position:relative}
+    h2::after{content:"";display:block;height:2px;width:36px;background:var(--accent-blue);margin-top:6px}
+    h3{margin:24px 0 6px 0;font-size:14px;color:var(--muted);letter-spacing:.2px;text-transform:uppercase}
+
+    ul{padding-left:18px;margin:6px 0 0}
+    li{margin:6px 0}
+    a{color:inherit;text-decoration:none;box-shadow: inset 0 -1px 0 0 rgba(0,0,0,.35);transition: box-shadow .15s ease, background .15s ease}
+    a:hover{box-shadow: inset 0 -2px 0 0 var(--accent-blue); color: inherit; background: transparent}
+    a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+    .note{color:var(--muted);font-style:italic;font-size:14px;margin:4px 0}
+
+    footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:10px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .stamp{display:inline-flex;align-items:center;gap:8px;line-height:1;white-space:nowrap}
+    .tag{background:var(--text);color:#fff;font-weight:700;text-transform:uppercase;font-size:10px;padding:4px 6px;letter-spacing:.4px}
+
+    html{scroll-behavior:smooth}
+
+    @media print{
+      .tabs, .index, .tag{display:none}
+      a{box-shadow:none;text-decoration:underline}
+      .container{padding:0}
+      header{margin-bottom:0}
+      .section{break-inside:avoid}
+    }
+
+    @media (max-width: 860px){
+      .layout{grid-template-columns:1fr}
+      .index{position:static;border-top:none;padding-top:0;margin-bottom:8px}
+      .index h3{display:none}
+      .toc{display:flex;flex-wrap:wrap;gap:10px}
+      .toc li{margin:0}
+    }
+  </style>
+</head>
+<body>
+  <!-- Password Gate -->
+  <div class="gate" id="gate">
+    <div class="gate-card">
+      <h1>1312 Graphs and Timelines</h1>
+      <p class="sub">Working versions of interactive assets for <span class="hl-red">BF's investigations</span>.</p>
+      <div class="row">
+        <div style="flex:1">
+          <label for="pw">Access password</label>
+          <input id="pw" type="password" inputmode="numeric" autocomplete="current-password" aria-describedby="err" />
+          <div id="err" class="err" role="alert" aria-live="polite"></div>
+        </div>
+        <button id="enter" type="button" aria-label="Enter">Enter</button>
+      </div>
+      </div>
+  </div>
+
+  <!-- Main Site -->
+  <div class="container" id="site">
+    <header>
+      <div class="brand">
+        <h1>1312 Graphs and Timelines</h1>
+        <small>Working versions of interactive assets for <span class="hl-red">BF's investigations</span></small>
+      </div>
+      <div class="meta">build v1.4 · <span class="tag">index</span></div>
+    </header>
+
+    <nav class="tabs" role="tablist" aria-label="Sections">      
+      <button class="tab" role="tab" id="tab-poland" aria-controls="panel-poland" aria-selected="true">Poland</button>
+      <button class="tab" role="tab" id="tab-channel" aria-controls="panel-channel" aria-selected="false">Channel</button>
+      <button class="tab" role="tab" id="tab-melilla" aria-controls="panel-melilla" aria-selected="false">Melilla</button>
+    </nav>
+
+<!-- POLAND -->
+    <section id="panel-poland" class="panel" role="tabpanel" aria-labelledby="tab-poland" aria-hidden="false">
+      <div class="layout">
+        <aside class="index" aria-label="Poland index">
+          <h3>Sections</h3>
+          <ol class="toc">
+            <li><a href="#pol-overview">Overview</a></li>
+            <li><a href="#pol-links">Links</a></li>
+          </ol>
+        </aside>
+
+        <main>
+          <div id="pol-overview" class="section">
+            <h2>Poland</h2>
+            <p>Poland investigation assets. Files are now under <code>/poland/</code>.</p>
+          </div>
+          
+          <div id="pol-links" class="section">
+            <h3>Links</h3>
+            <ul>
+              <li><a target="_blank" rel="noopener noreferrer" href="poland/timeline_pl.html">Timeline Poland</a></li>
+            </ul>
+          </div>
+
+        </main>
+      </div>
+    </section>
+
+
+
+
+    <!-- CHANNEL -->
+    <section id="panel-channel" class="panel" role="tabpanel" aria-labelledby="tab-channel" aria-hidden="true">
+      <div class="layout">
+        <aside class="index" aria-label="Channel index">
+          <h3>Sections</h3>
+          <ol class="toc">
+            <li><a href="#chn-overview">Overview</a></li>
+            <li><a href="#chn-links">Links</a></li>
+          </ol>
+        </aside>
+
+        <main>
+          <div id="chn-overview" class="section">
+            <h2>Channel</h2>
+            <p class="note">Add links to Channel HTML assets here (mirrors Melilla structure). Files are expected under <code>/channel/</code>.</p>
+          </div>
+          <div id="chn-links" class="section">
+            <h3>Links</h3>
+            <ul>
+              <!-- Add Channel links like: <li><a target="_blank" rel="noopener noreferrer" href="channel/some_asset.html">Some asset</a></li> -->
+            </ul>
+          </div>
+        </main>
+      </div>
+    </section>
+
+    <!-- MELILLA -->
+    <section id="panel-melilla" class="panel" role="tabpanel" aria-labelledby="tab-melilla" aria-hidden="true">
+      <div class="layout">
+        <aside class="index" aria-label="Melilla index">
+          <h3>Sections</h3>
+          <ol class="toc">
+            <li><a href="#mel-robert">For Robert, Zac and Jack</a></li>
+            <li><a href="#mel-hanaa">For Hanaa</a></li>
+            <li><a href="#mel-trimeste">Old — Trimestre</a></li>
+            <li><a href="#mel-mensuel">Old — Mensuel</a></li>
+            <li><a href="#mel-misc">Old — Rand</a></li>
+          </ol>
+        </aside>
+
+        <main>
+          <div id="mel-robert" class="section">
+            <h2>For Robert, Zac and Jack</h2>
+            <ul>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/interactive_plot.html">Political timeline with Funds</a></li>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/interactive_timeline_EN.html">Political timeline EN</a></li>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/impunity_timeline_13.04.24.html">Latest — Impunity timeline</a></li>
+            </ul>
+          </div>
+
+          <div id="mel-hanaa" class="section">
+            <h2>For Hanaa</h2>
+            <ul>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/impunity_timeline_13.04.24.html">Updated — 13.04 — Impunity timeline</a></li>
+            </ul>
+          </div>
+
+          <div id="mel-trimeste" class="section">
+            <h2>Old — Trimestre</h2>
+            <ul>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/3M_morts_abs.html">Morts et taux de mortalité 3M</a></li>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/3M_melilla_arrivees.html">Arrivées et taux de mortalité 3M</a></li>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/3M_dr_only.html">Taux de mortalité 3M</a></li>
+            </ul>
+          </div>
+
+          <div id="mel-mensuel" class="section">
+            <h2>Old — Mensuel</h2>
+            <ul>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/M_deaths_melilla.html">Morts et taux de mortalité</a></li>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/M_melilla_arrivees.html">Arrivées et taux de mortalité</a></li>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/M_DR_melilla.html">Taux de mortalité</a></li>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/M_SPAIN_ARRIVALS.html">Arrivées ESPAGNE</a></li>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/M_Ceuta_Melilla.html">Arrivées CEUTA et MELILLA</a></li>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/arrivals_nation.html">Arrivées par nationalité</a></li>
+            </ul>
+          </div>
+
+          <div id="mel-misc" class="section">
+            <h2>Old — Rand</h2>
+            <ul>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/timeline_arrestations_AMDH.html">Timeline Arrestations AMDH</a></li>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/timeline_arrivals_v1.html">Timeline Arrivals v1</a></li>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/timeline_arrivals_v2.html">Timeline Arrivals v2</a></li>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/timeline_booza_AMDH.html">Timeline Booza AMDH</a></li>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/timeline_morts_APDHA.html">Timeline Morts APDHA</a></li>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/timeline_morts_IOM.html">Timeline Morts IOM</a></li>
+              <li><a target="_blank" rel="noopener noreferrer" href="melilla/proximité.html">Timeline Morts proximité diplo</a></li>
+            </ul>
+          </div>
+        </main>
+      </div>
+    </section>
+
+    
+
+    <footer>
+      <span class="stamp">© Project index</span>
+      </footer>
+  </div>
+
+  
+<script>
+// ===== Minimal robust gate script =====
+(function() {
+  const gate = document.getElementById('gate');
+  const site = document.getElementById('site');
+  const pw = document.getElementById('pw');
+  const enterBtn = document.getElementById('enter');
+  const err = document.getElementById('err');
+  const HASH_HEX = "fe6770eba40fa55663c35e6c53f7f40e0dbcdca21f2b39882cc60fe70dece50b";
+
+  function sha256hexFallback(ascii) {
+    function R(v,n) { return (v>>>n)|(v<<(32-n)); }
+    var max=2**32, l=ascii.length*8, i=0, j=0, res='', w=[], H=[], K=[];
+    var p={}; for(var c=2,k=0;k<64;c++) if(!p[c]){ for(i=0;i<64;i+=c) p[i+c]=c;
+      H[k]=(c**.5*max)|0; K[k++]=(c**(1/3)*max)|0; }
+    ascii+='\\x80'; while(ascii.length%64-56) ascii+='\\x00';
+    for(i=0;i<ascii.length;i++) { j=ascii.charCodeAt(i); w[i>>2]|=j<<((3-i)%4)*8; }
+    w[w.length]=((l/max)|0); w[w.length]=l;
+    for(j=0;j<w.length;) {
+      var W=w.slice(j,j+=16), old=H.slice(0), t,a,e;
+      for(i=0;i<64;i++) {
+        var w15=W[i-15], w2=W[i-2];
+        var s0=R(w15,7)^R(w15,18)^(w15>>>3);
+        var s1=R(w2,17)^R(w2,19)^(w2>>>10);
+        W[i]=(i<16?W[i]: (W[i-16]+s0+W[i-7]+s1)|0);
+        a=H[0]; e=H[4];
+        t=((H[7]+(R(e,6)^R(e,11)^R(e,25))+((e&H[5])|((~e)&H[6]))+K[i]+W[i])|0);
+        var t2=(R(a,2)^R(a,13)^R(a,22)) + ((a&H[1])^(a&H[2])^(H[1]&H[2]));
+        H=[(t+t2)|0].concat(H); H[4]=(H[4]+t)|0;
+        for(var q=0;q<8;q++) H[q]=(H[q]+old[q])|0;
+      }
+    }
+    for(i=0;i<8;i++) for(j=3;j+1;j--) { var b=(H[i]>>> (j*8)) & 255; res+=((b<16)?'0':'')+b.toString(16);}
+    return res;
+  }
+
+  async function sha256hex(str) {
+    if (window.crypto && crypto.subtle) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    }
+    return sha256hexFallback(str);
+  }
+
+  async function unlock() {
+    try {
+      err.textContent = "";
+      const candidate = pw.value || "";
+      const hex = await sha256hex(candidate);
+      const ok = (hex === HASH_HEX);
+      if (ok) {
+        sessionStorage.setItem('gate_ok','1');
+        gate.style.display = 'none';
+        site.style.display = 'block';
+      } else {
+        err.textContent = "Incorrect password";
+      }
+    } catch(e) {
+      console.error("Gate error:", e);
+      err.textContent = "Unexpected error: " + (e && e.message ? e.message : e);
+    }
+  }
+
+  function wire() {
+    if (sessionStorage.getItem('gate_ok') === '1') {
+      gate.style.display = 'none';
+      site.style.display = 'block';
+      return;
+    }
+    if (enterBtn) enterBtn.addEventListener('click', unlock);
+    if (pw) pw.addEventListener('keydown', (e)=>{ if(e.key==='Enter') unlock(); });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', wire);
+  } else {
+    wire();
+  }
+
+  // ===== Tabs (unchanged) =====
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.panel');
+  function activateTab(id){
+    tabs.forEach(t=>t.setAttribute('aria-selected', String(t.id===id)));
+    panels.forEach(p=>{
+      const show = p.id === document.getElementById(id).getAttribute('aria-controls');
+      p.setAttribute('aria-hidden', String(!show));
+    });
+    const shown = Array.from(panels).find(p=>p.getAttribute('aria-hidden')==='false');
+    const h2 = shown && shown.querySelector('h2');
+    if(h2){ h2.setAttribute('tabindex','1'); h2.focus({preventScroll:true}); }
+  }
+  tabs.forEach(t=>t.addEventListener('click', ()=>activateTab(t.id)));
+  document.addEventListener('keydown', (e) => {
+    const current = Array.from(tabs).findIndex(t => t.getAttribute('aria-selected') === 'true');
+    if (['ArrowRight','ArrowLeft'].includes(e.key)) {
+      e.preventDefault();
+      const dir = e.key === 'ArrowRight' ? 1 : -1;
+      const next = (current + dir + tabs.length) % tabs.length;
+      tabs[next].focus();
+      activateTab(tabs[next].id);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
