@@ -1,13 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <title>1312 Graphs and Timelines</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<title>1312 Graphs and Timelines</title>
+<style>
     :root{
       --bg:#fff;
       --text:#111;
@@ -153,171 +154,170 @@
   </style>
 </head>
 <body>
-  <!-- Password Gate -->
-  <div class="gate" id="gate">
-    <div class="gate-card">
-      <h1>1312 Graphs and Timelines</h1>
-      <p class="sub">Working versions of interactive assets for <span class="hl-red">BF's investigations</span>.</p>
-      <div class="row">
-        <div style="flex:1">
-          <label for="pw">Access password</label>
-          <input id="pw" type="password" inputmode="numeric" autocomplete="current-password" aria-describedby="err" />
-          <div id="err" class="err" role="alert" aria-live="polite"></div>
-        </div>
-        <button id="enter" type="button" aria-label="Enter">Enter</button>
-      </div>
-      </div>
-  </div>
-
-  <!-- Main Site -->
-  <div class="container" id="site">
-    <header>
-      <div class="brand">
-        <h1>1312 Graphs and Timelines</h1>
-        <small>Working versions of interactive assets for <span class="hl-red">BF's investigations</span></small>
-      </div>
-      <div class="meta">build v1.4 · <span class="tag">index</span></div>
-    </header>
-
-    <nav class="tabs" role="tablist" aria-label="Sections">      
-      <button class="tab" role="tab" id="tab-poland" aria-controls="panel-poland" aria-selected="true">Poland</button>
-      <button class="tab" role="tab" id="tab-channel" aria-controls="panel-channel" aria-selected="false">Channel</button>
-      <button class="tab" role="tab" id="tab-melilla" aria-controls="panel-melilla" aria-selected="false">Melilla</button>
-    </nav>
-
+<!-- Password Gate -->
+<div class="gate" id="gate">
+<div class="gate-card">
+<h1>1312 Graphs and Timelines</h1>
+<p class="sub">Working versions of interactive assets for <span class="hl-red">BF's investigations</span>.</p>
+<div class="row">
+<div style="flex:1">
+<label for="pw">Access password</label>
+<input aria-describedby="err" autocomplete="current-password" id="pw" inputmode="numeric" type="password"/>
+<div aria-live="polite" class="err" id="err" role="alert"></div>
+</div>
+<button aria-label="Enter" id="enter" type="button">Enter</button>
+</div>
+</div>
+</div>
+<!-- Main Site -->
+<div class="container" id="site">
+<header>
+<div class="brand">
+<h1>1312 Graphs and Timelines</h1>
+<small>Working versions of interactive assets for <span class="hl-red">BF's investigations</span></small>
+</div>
+<div class="meta">build v1.4 · <span class="tag">index</span></div>
+</header>
+<nav aria-label="Sections" class="tabs" role="tablist">
+<button aria-controls="panel-poland" aria-selected="true" class="tab" id="tab-poland" role="tab">Poland</button>
+<button aria-controls="panel-channel" aria-selected="false" class="tab" id="tab-channel" role="tab">Channel</button>
+<button aria-controls="panel-melilla" aria-selected="false" class="tab" id="tab-melilla" role="tab">Melilla</button>
+</nav>
 <!-- POLAND -->
-    <section id="panel-poland" class="panel" role="tabpanel" aria-labelledby="tab-poland" aria-hidden="false">
-      <div class="layout">
-        <aside class="index" aria-label="Poland index">
-          <h3>Sections</h3>
-          <ol class="toc">
-            <li><a href="#pol-overview">Overview</a></li>
-            <li><a href="#pol-links">Links</a></li>
-          </ol>
-        </aside>
+<section aria-hidden="false" aria-labelledby="tab-poland" class="panel" id="panel-poland" role="tabpanel">
+<div class="layout">
+<aside aria-label="Poland index" class="index">
+<h3>Sections</h3>
+<ol class="toc">
+<li><a href="#pol-overview">Overview</a></li>
+<li><a href="#pol-links">Links</a></li>
+</ol>
+</aside>
+<main>
+<div class="section" id="pol-overview">
+<h2>Poland</h2>
+<p>Poland investigation assets. Files are now under <code>/poland/</code>.</p>
+</div>
+<div class="section" id="pol-links">
+<h3>Links</h3>
+<ul>
+<li><a href="poland/timeline_pl.html" rel="noopener noreferrer" target="_blank">Timeline Poland</a></li>
+</ul>
+</div>
+</main>
+</div>
+</section>
+<!-- CHANNEL -->
+<section aria-hidden="true" aria-labelledby="tab-channel" class="panel" id="panel-channel" role="tabpanel">
+<div class="layout">
+<aside aria-label="Channel index" class="index">
+<h3>Sections</h3>
+<ol class="toc">
+<li><a href="#chn-overview">Overview</a></li>
+<li><a href="#chn-figures">Figures</a></li>
+<li><a href="#chn-maps">Maps</a></li>
+</ol>
+</aside>
+<main>
+<div class="section" id="chn-overview">
+<h2>Channel</h2>
+<p class="note">Channel investigation assets.</p>
+</div>
+<div class="section" id="chn-figures">
+<h2>Figures</h2>
+<h3>Deaths</h3>
+<ul>
+<li><a href="channel/death_channel_galisson_fig_20251010.html" rel="noopener noreferrer" target="_blank">Deaths — monthly (Galisson)</a></li>
+</ul>
+<h3>Arrivals</h3>
+<ul>
+<li><a href="channel/boats_density_distance_20251010.html" rel="noopener noreferrer" target="_blank">Boat density vs Rescues' distance to shore</a></li>
+</ul>
+<h3>Repression</h3>
+<ul>
+<li class="note">[Add repression figure link]</li>
+</ul>
+</div>
+<div class="section" id="chn-maps">
+<h2>Maps</h2>
+<h3>CROSS</h3>
+<ul>
+<li><a href="channel/cross_map_20251010.html" rel="noopener noreferrer" target="_blank">CROSS — map</a></li>
+</ul>
+<h3>Deaths</h3>
+<ul>
 
-        <main>
-          <div id="pol-overview" class="section">
-            <h2>Poland</h2>
-            <p>Poland investigation assets. Files are now under <code>/poland/</code>.</p>
-          </div>
-          
-          <div id="pol-links" class="section">
-            <h3>Links</h3>
-            <ul>
-              <li><a target="_blank" rel="noopener noreferrer" href="poland/timeline_pl.html">Timeline Poland</a></li>
-            </ul>
-          </div>
-
-        </main>
-      </div>
-    </section>
-
-
-
-
-    <!-- CHANNEL -->
-    <section id="panel-channel" class="panel" role="tabpanel" aria-labelledby="tab-channel" aria-hidden="true">
-      <div class="layout">
-        <aside class="index" aria-label="Channel index">
-          <h3>Sections</h3>
-          <ol class="toc">
-            <li><a href="#chn-overview">Overview</a></li>
-            <li><a href="#chn-links">Links</a></li>
-          </ol>
-        </aside>
-
-        <main>
-          <div id="chn-overview" class="section">
-            <h2>Channel</h2>
-            <p class="note">Add links to Channel HTML assets here (mirrors Melilla structure). Files are expected under <code>/channel/</code>.</p>
-          </div>
-          <div id="chn-links" class="section">
-            <h3>Links</h3>
-            <ul>
-              <!-- Add Channel links like: <li><a target="_blank" rel="noopener noreferrer" href="channel/some_asset.html">Some asset</a></li> -->
-            </ul>
-          </div>
-        </main>
-      </div>
-    </section>
-
-    <!-- MELILLA -->
-    <section id="panel-melilla" class="panel" role="tabpanel" aria-labelledby="tab-melilla" aria-hidden="true">
-      <div class="layout">
-        <aside class="index" aria-label="Melilla index">
-          <h3>Sections</h3>
-          <ol class="toc">
-            <li><a href="#mel-robert">For Robert, Zac and Jack</a></li>
-            <li><a href="#mel-hanaa">For Hanaa</a></li>
-            <li><a href="#mel-trimeste">Old — Trimestre</a></li>
-            <li><a href="#mel-mensuel">Old — Mensuel</a></li>
-            <li><a href="#mel-misc">Old — Rand</a></li>
-          </ol>
-        </aside>
-
-        <main>
-          <div id="mel-robert" class="section">
-            <h2>For Robert, Zac and Jack</h2>
-            <ul>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/interactive_plot.html">Political timeline with Funds</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/interactive_timeline_EN.html">Political timeline EN</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/impunity_timeline_13.04.24.html">Latest — Impunity timeline</a></li>
-            </ul>
-          </div>
-
-          <div id="mel-hanaa" class="section">
-            <h2>For Hanaa</h2>
-            <ul>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/impunity_timeline_13.04.24.html">Updated — 13.04 — Impunity timeline</a></li>
-            </ul>
-          </div>
-
-          <div id="mel-trimeste" class="section">
-            <h2>Old — Trimestre</h2>
-            <ul>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/3M_morts_abs.html">Morts et taux de mortalité 3M</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/3M_melilla_arrivees.html">Arrivées et taux de mortalité 3M</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/3M_dr_only.html">Taux de mortalité 3M</a></li>
-            </ul>
-          </div>
-
-          <div id="mel-mensuel" class="section">
-            <h2>Old — Mensuel</h2>
-            <ul>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/M_deaths_melilla.html">Morts et taux de mortalité</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/M_melilla_arrivees.html">Arrivées et taux de mortalité</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/M_DR_melilla.html">Taux de mortalité</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/M_SPAIN_ARRIVALS.html">Arrivées ESPAGNE</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/M_Ceuta_Melilla.html">Arrivées CEUTA et MELILLA</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/arrivals_nation.html">Arrivées par nationalité</a></li>
-            </ul>
-          </div>
-
-          <div id="mel-misc" class="section">
-            <h2>Old — Rand</h2>
-            <ul>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/timeline_arrestations_AMDH.html">Timeline Arrestations AMDH</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/timeline_arrivals_v1.html">Timeline Arrivals v1</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/timeline_arrivals_v2.html">Timeline Arrivals v2</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/timeline_booza_AMDH.html">Timeline Booza AMDH</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/timeline_morts_APDHA.html">Timeline Morts APDHA</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/timeline_morts_IOM.html">Timeline Morts IOM</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="melilla/proximité.html">Timeline Morts proximité diplo</a></li>
-            </ul>
-          </div>
-        </main>
-      </div>
-    </section>
-
-    
-
-    <footer>
-      <span class="stamp">© Project index</span>
-      </footer>
-  </div>
-
-  
+<li><a href="channel/deaths_galisson_map_20251010.html" rel="noopener noreferrer" target="_blank">Deaths — Galisson (map)</a></li><li><a href="channel/deaths_iom_map_20251010.html" rel="noopener noreferrer" target="_blank">Deaths — IOM (map)</a></li></ul>
+</div>
+</main>
+</div>
+</section>
+<!-- MELILLA -->
+<section aria-hidden="true" aria-labelledby="tab-melilla" class="panel" id="panel-melilla" role="tabpanel">
+<div class="layout">
+<aside aria-label="Melilla index" class="index">
+<h3>Sections</h3>
+<ol class="toc">
+<li><a href="#mel-robert">For Robert, Zac and Jack</a></li>
+<li><a href="#mel-hanaa">For Hanaa</a></li>
+<li><a href="#mel-trimeste">Old — Trimestre</a></li>
+<li><a href="#mel-mensuel">Old — Mensuel</a></li>
+<li><a href="#mel-misc">Old — Rand</a></li>
+</ol>
+</aside>
+<main>
+<div class="section" id="mel-robert">
+<h2>For Robert, Zac and Jack</h2>
+<ul>
+<li><a href="melilla/interactive_plot.html" rel="noopener noreferrer" target="_blank">Political timeline with Funds</a></li>
+<li><a href="melilla/interactive_timeline_EN.html" rel="noopener noreferrer" target="_blank">Political timeline EN</a></li>
+<li><a href="melilla/impunity_timeline_13.04.24.html" rel="noopener noreferrer" target="_blank">Latest — Impunity timeline</a></li>
+</ul>
+</div>
+<div class="section" id="mel-hanaa">
+<h2>For Hanaa</h2>
+<ul>
+<li><a href="melilla/impunity_timeline_13.04.24.html" rel="noopener noreferrer" target="_blank">Updated — 13.04 — Impunity timeline</a></li>
+</ul>
+</div>
+<div class="section" id="mel-trimeste">
+<h2>Old — Trimestre</h2>
+<ul>
+<li><a href="melilla/3M_morts_abs.html" rel="noopener noreferrer" target="_blank">Morts et taux de mortalité 3M</a></li>
+<li><a href="melilla/3M_melilla_arrivees.html" rel="noopener noreferrer" target="_blank">Arrivées et taux de mortalité 3M</a></li>
+<li><a href="melilla/3M_dr_only.html" rel="noopener noreferrer" target="_blank">Taux de mortalité 3M</a></li>
+</ul>
+</div>
+<div class="section" id="mel-mensuel">
+<h2>Old — Mensuel</h2>
+<ul>
+<li><a href="melilla/M_deaths_melilla.html" rel="noopener noreferrer" target="_blank">Morts et taux de mortalité</a></li>
+<li><a href="melilla/M_melilla_arrivees.html" rel="noopener noreferrer" target="_blank">Arrivées et taux de mortalité</a></li>
+<li><a href="melilla/M_DR_melilla.html" rel="noopener noreferrer" target="_blank">Taux de mortalité</a></li>
+<li><a href="melilla/M_SPAIN_ARRIVALS.html" rel="noopener noreferrer" target="_blank">Arrivées ESPAGNE</a></li>
+<li><a href="melilla/M_Ceuta_Melilla.html" rel="noopener noreferrer" target="_blank">Arrivées CEUTA et MELILLA</a></li>
+<li><a href="melilla/arrivals_nation.html" rel="noopener noreferrer" target="_blank">Arrivées par nationalité</a></li>
+</ul>
+</div>
+<div class="section" id="mel-misc">
+<h2>Old — Rand</h2>
+<ul>
+<li><a href="melilla/timeline_arrestations_AMDH.html" rel="noopener noreferrer" target="_blank">Timeline Arrestations AMDH</a></li>
+<li><a href="melilla/timeline_arrivals_v1.html" rel="noopener noreferrer" target="_blank">Timeline Arrivals v1</a></li>
+<li><a href="melilla/timeline_arrivals_v2.html" rel="noopener noreferrer" target="_blank">Timeline Arrivals v2</a></li>
+<li><a href="melilla/timeline_booza_AMDH.html" rel="noopener noreferrer" target="_blank">Timeline Booza AMDH</a></li>
+<li><a href="melilla/timeline_morts_APDHA.html" rel="noopener noreferrer" target="_blank">Timeline Morts APDHA</a></li>
+<li><a href="melilla/timeline_morts_IOM.html" rel="noopener noreferrer" target="_blank">Timeline Morts IOM</a></li>
+<li><a href="melilla/proximité.html" rel="noopener noreferrer" target="_blank">Timeline Morts proximité diplo</a></li>
+</ul>
+</div>
+</main>
+</div>
+</section>
+<footer>
+<span class="stamp">© Project index</span>
+</footer>
+</div>
 <script>
 // ===== Minimal robust gate script =====
 (function() {
@@ -422,6 +422,5 @@
   });
 })();
 </script>
-
 </body>
 </html>
